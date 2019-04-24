@@ -33,11 +33,41 @@ export default new Router({
     },{
       path: '/myquestions',
       name: 'myQuestions',
-      component: () => import('./views/MyQuestion.vue')
+      component: () => import('./views/MyQuestion.vue'),
+      meta: { requiresAuth: true },
+      beforeEnter: (to, from, next) => {
+        if (to.matched.some(record => record.meta.requiresAuth)) {
+          if (localStorage.getItem("token") === null) {
+            next({
+              path: '/users/login',
+              query: { redirect: to.fullPath }
+            })
+          } else {
+            next()
+          }
+        } else {
+          next()
+        }
+      }
     },{
       path: '/questions',
       name: 'questions',
       component: () => import('./views/Question.vue'),
+      meta: { requiresAuth: true },
+      beforeEnter: (to, from, next) => {
+        if (to.matched.some(record => record.meta.requiresAuth)) {
+          if (localStorage.getItem("token") === null) {
+            next({
+              path: '/users/login',
+              query: { redirect: to.fullPath }
+            })
+          } else {
+            next()
+          }
+        } else {
+          next() 
+        }
+      },
       children: [{
         path: 'ask',
         name: 'addQuestion',
@@ -55,6 +85,21 @@ export default new Router({
       path: '/answers',
       name: 'answers',
       component: () => import('./views/Answer.vue'),
+      meta: { requiresAuth: true },
+      beforeEnter: (to, from, next) => {
+        if (to.matched.some(record => record.meta.requiresAuth)) {
+          if (localStorage.getItem("token") === null) {
+            next({
+              path: '/users/login',
+              query: { redirect: to.fullPath }
+            })
+          } else {
+            next()
+          }
+        } else {
+          next() 
+        }
+      },
       children: [{
         path: 'edit/:questionId/:answerId',
         name: 'editAnswer',

@@ -49,7 +49,7 @@
         :ripple="false"
         flat
       >
-        {{ this.$store.state.currentUserName }}
+        <v-icon>person</v-icon>{{ this.$store.state.currentUserName }}
       </v-btn>
       <v-btn
         v-if="this.$store.state.token !== null"
