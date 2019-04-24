@@ -71,20 +71,20 @@
                           <template v-slot:badge>
                             <span>{{ question.answers.length }}</span>
                           </template>
-                          <v-icon>comment</v-icon>
+                          <v-icon color="blue-grey darken-4">comment</v-icon>
                         </v-badge>
                       </div>
                       <div v-else>
-                        <v-icon>comment</v-icon>
+                        <v-icon color="blue-grey darken-4">comment</v-icon>
                       </div>
                       <v-spacer></v-spacer>
                         <div v-if="$store.state.currentUserId === question.createdBy._id">
                           <router-link class="no-style"
                             :to="{name: 'editQuestion', params: {questionId: question._id}}">
-                            <v-icon class="mx-2">edit</v-icon>
+                            <v-icon class="mx-2" color="blue darken-4">edit</v-icon>
                           </router-link>
 
-                          <v-icon class="mx-2" @click="confirmDelete">delete</v-icon>
+                          <v-icon class="mx-2" color="red" @click="confirmDelete">delete</v-icon>
                         </div>
                         <div v-else>
                           <span class="heading">Asked by {{ question.createdBy.name }}</span>
@@ -118,11 +118,14 @@ export default {
   },
   methods: {
     checkVoteType() {
+      console.log(this.question.upvotes.find(id => id == this.$store.state.currentUserId))
       if(this.question.upvotes.find(id => id == this.$store.state.currentUserId)) {
         this.voteType = "upvote"
+        console.log(this.voteType);
       }
       else if (this.question.downvotes.find(id => id == this.$store.state.currentUserId)) {
         this.voteType = "downvote"
+        console.log(this.voteType);
       }
       else {
         this.voteType = null

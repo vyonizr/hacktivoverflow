@@ -18,7 +18,7 @@ export default new Vuex.Store({
     setCredentials(state, payload) {
       state.token = payload.token
       state.currentUserId = payload.currentUserId
-      state.currentUserId = payload.currentUserName
+      state.currentUserName = payload.currentUserName
     },
     clearCredentials(state) {
       state.token = null
@@ -55,6 +55,7 @@ export default new Vuex.Store({
           currentUserId: localStorage.getItem('id'),
           currentUserName: localStorage.getItem('name')
         })
+
         context.dispatch('getAllQuestions')
 
         Swal.fire({
