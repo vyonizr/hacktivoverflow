@@ -28,7 +28,7 @@
                     </v-flex>
 
                     <v-flex xs4>
-                      <span>{{ question.upvotes.length - question.downvotes.length }}</span>
+                      <span>{{ totalVote }}</span>
                     </v-flex>
 
                     <v-flex xs4>
@@ -105,11 +105,13 @@ export default {
   props: ['question'],
   data() {
     return {
-      voteType: null
+      voteType: null,
+      totalVote: null
     }
   },
   created() {
     this.checkVoteType()
+    this.calculateVote()
   },
   computed: {
 
@@ -132,8 +134,10 @@ export default {
           authentication: localStorage.getItem("token")
         }
       })
-      .then(() => {
-        this.checkVoteType()
+      .then(({ data }) => {
+        // data = object question
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        this.voteType = "upvote"
         console.log('upvoted to database');
       })
       .catch(err => {
@@ -141,13 +145,14 @@ export default {
       })
     },
     removeUpvoteAQuestion() {
-      axios.delete(`/questions/${this.question._id}/upvote`, {}, {
+      axios.delete(`/questions/${this.question._id}/upvote`, {
         headers: {
           authentication: localStorage.getItem("token")
         }
       })
-      .then(() => {
-        this.checkVoteType()
+      .then(({ data }) => {
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        this.voteType = null
         console.log('removed upvote from database');
       })
       .catch(err => {
@@ -160,8 +165,9 @@ export default {
           authentication: localStorage.getItem("token")
         }
       })
-      .then(() => {
-        this.checkVoteType()
+      .then(({ data }) => {
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        this.voteType = "downvote"
         console.log('downvoted to database');
       })
       .catch(err => {
@@ -169,13 +175,14 @@ export default {
       })
     },
     removeDownvoteAQuestion() {
-      axios.delete(`/questions/${this.question._id}/downvote`, {}, {
+      axios.delete(`/questions/${this.question._id}/downvote`, {
         headers: {
           authentication: localStorage.getItem("token")
         }
       })
-      .then(() => {
-        this.checkVoteType()
+      .then(({ data }) => {
+        this.voteType = null
+        this.totalVote = data.upvotes.length - data.downvotes.length
         console.log('removed downvote from database');
       })
       .catch(err => {
@@ -214,6 +221,9 @@ export default {
       .catch(err => {
         console.log(err);
       })
+    },
+    calculateVote() {
+      this.totalVote = this.question.upvotes.length - this.question.downvotes.length
     }
   }
 }

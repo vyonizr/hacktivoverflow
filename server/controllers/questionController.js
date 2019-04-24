@@ -108,7 +108,7 @@ class QuestionController {
       description: req.body.description,
     }, { new: true })
     .then(updatedQuestion => {
-      res.status(201).json(updatedQuestion)
+      res.status(200).json(updatedQuestion)
     })
     .catch(err => {
       if (err.errors) {

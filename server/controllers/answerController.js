@@ -95,7 +95,7 @@ class AnswerController {
   static upvoteAnAnswer(req, res) {
     Answer.findByIdAndUpdate(req.params.answerId, {
       $pull: {
-        upvotes: req.authenticatedUser.id
+        downvotes: req.authenticatedUser.id
       },
       $addToSet: {
         upvotes: req.authenticatedUser.id

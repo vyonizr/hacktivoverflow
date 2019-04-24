@@ -6,6 +6,9 @@ const mongoose = require("mongoose")
 const cors = require("cors")
 const port = process.env.PORT || 80
 const routes = require("./routes")
+const schedule = require("./helpers/cronJob")
+
+schedule()
 
 mongoose.set('useFindAndModify', false);
 

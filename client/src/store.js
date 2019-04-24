@@ -10,19 +10,25 @@ export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
     currentUserId: localStorage.getItem('id'),
-    questions: []
+    currentUserName: localStorage.getItem('name'),
+    questions: [],
+    myQuestions: []
   },
   mutations: {
     setCredentials(state, payload) {
       state.token = payload.token
       state.currentUserId = payload.currentUserId
+      state.currentUserId = payload.currentUserName
     },
-    clearToken(state) {
+    clearCredentials(state) {
       state.token = null
       state.currentUserId = null
+      state.currentUserName = null
     },
     setQuestions(state, payload) {
       state.questions = payload
+      let myQuestions= state.questions.filter(question => question.createdBy._id === state.currentUserId)
+      state.myQuestions = myQuestions
     }
   },
   actions: {
@@ -46,7 +52,8 @@ export default new Vuex.Store({
 
         context.commit("setCredentials", {
           token: localStorage.getItem('token'),
-          currentUserId: localStorage.getItem('id')
+          currentUserId: localStorage.getItem('id'),
+          currentUserName: localStorage.getItem('name')
         })
         context.dispatch('getAllQuestions')
 
@@ -77,7 +84,7 @@ export default new Vuex.Store({
     },
     logout(context) {
       localStorage.clear()
-      context.commit("clearToken")
+      context.commit("clearCredentials")
       router.push({ name: 'home' })
     }
   }

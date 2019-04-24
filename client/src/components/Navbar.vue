@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app dark class="grey darken-3">
     <router-link to="/" style="text-decoration: none; color: inherit;">
-      <v-toolbar-title class="headline text-uppercase">
+      <v-toolbar-title class="headline text-uppercase mx-3">
           <span>Hacktiv</span>
           <span class="font-weight-light">Overflow</span>
       </v-toolbar-title>
@@ -12,7 +12,15 @@
         to="/myquestions"
         flat
       >
-        <span>Your questions</span>
+        <span>My questions</span>
+      </v-btn>
+      <v-btn
+        v-if="this.$store.state.token !== null"
+        :ripple="false"
+        to="/questions/ask"
+        flat
+      >
+        <v-icon>live_help</v-icon>Ask
       </v-btn>
     </v-toolbar-items>
 
@@ -39,10 +47,9 @@
       <v-btn
         v-if="this.$store.state.token !== null"
         :ripple="false"
-        to="/questions/ask"
         flat
       >
-        <v-icon>live_help</v-icon>Ask
+        {{ this.$store.state.currentUserName }}
       </v-btn>
       <v-btn
         v-if="this.$store.state.token !== null"
@@ -65,3 +72,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.no-style{
+  text-decoration: none;
+  color: inherit;
+}
+</style>

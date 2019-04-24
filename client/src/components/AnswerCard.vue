@@ -7,18 +7,58 @@
         <v-flex xs1>
           <v-layout column fill-height text-xs-center>
             <v-flex xs3>
-              <v-icon
+<!--               <v-icon
                 class="mx-auto"
               >
                 arrow_drop_up
-              </v-icon>
-            </v-flex>
-            <v-flex xs3>
-              <span>{{ answer.upvotes.length - answer.downvotes.length }}</span>
-            </v-flex>
-            <v-flex xs3>
-              <v-icon>arrow_drop_down</v-icon>
-            </v-flex>
+              </v-icon> -->
+            <v-icon
+              large
+              v-if="voteType === 'upvote'"
+              class="mx-auto"
+              color="orange darken-2"
+              @click="removeUpvoteAnAnswer"
+            >
+              arrow_drop_up
+            </v-icon>
+            <v-icon
+              large
+              v-else-if="voteType === null || voteType === 'downvote'"
+              class="mx-auto"
+              @click="upvoteAnswer"
+            >
+              arrow_drop_up
+            </v-icon>
+          </v-flex>
+
+          <v-flex xs3>
+            <span>{{ totalVote }}</span>
+          </v-flex>
+
+          <v-flex xs3>
+<!--               <v-icon
+                class="mx-auto"
+              >
+                arrow_drop_down
+              </v-icon> -->
+            <v-icon
+              large
+              v-if="voteType === 'downvote'"
+              color="orange"
+              class="mx-auto"
+              @click="removeDownvoteAnAnswer"
+            >
+              arrow_drop_down
+            </v-icon>
+            <v-icon
+              large
+              v-else-if="voteType === null || voteType === 'upvote'"
+              class="mx-auto"
+              @click="downvoteAnswer"
+            >
+              arrow_drop_down
+            </v-icon>
+          </v-flex>
           </v-layout>
         </v-flex>
         <v-flex xs12>
@@ -58,7 +98,100 @@
 </template>
 
 <script>
+import axios from '../api/axios'
+import Swal from 'sweetalert2'
+
 export default {
-  props: ["answer"]
+  props: ["answer"],
+  data() {
+    return {
+      voteType: null,
+      totalVote: null
+    }
+  },
+  created() {
+    this.checkVoteType()
+    this.calculateVote()
+  },
+  computed: {
+
+  },
+  methods: {
+    checkVoteType() {
+      if(this.answer.upvotes.find(id => id == this.$store.state.currentUserId)) {
+        this.voteType = "upvote"
+      }
+      else if (this.answer.downvotes.find(id => id == this.$store.state.currentUserId)) {
+        this.voteType = "downvote"
+      }
+      else {
+        this.voteType = null
+      }
+    },
+    upvoteAnswer() {
+      axios.post(`/answers/${this.answer._id}/upvote`, {}, {
+        headers: {
+          authentication: localStorage.getItem("token")
+        }
+      })
+      .then(({ data }) => {
+        // data = object answer
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        this.voteType = "upvote"
+        console.log('upvoted to database');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    removeUpvoteAnAnswer() {
+      axios.delete(`/answers/${this.answer._id}/upvote`, {
+        headers: {
+          authentication: localStorage.getItem("token")
+        }
+      })
+      .then(({ data }) => {
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        this.voteType = null
+        console.log('removed upvote from database');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    downvoteAnswer() {
+      axios.post(`/answers/${this.answer._id}/downvote`, {}, {
+        headers: {
+          authentication: localStorage.getItem("token")
+        }
+      })
+      .then(({ data }) => {
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        this.voteType = "downvote"
+        console.log('downvoted to database');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    removeDownvoteAnAnswer() {
+      axios.delete(`/answers/${this.answer._id}/downvote`, {
+        headers: {
+          authentication: localStorage.getItem("token")
+        }
+      })
+      .then(({ data }) => {
+        this.voteType = null
+        this.totalVote = data.upvotes.length - data.downvotes.length
+        console.log('removed downvote from database');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    calculateVote() {
+      this.totalVote = this.answer.upvotes.length - this.answer.downvotes.length
+    }
+  }
 }
 </script>
