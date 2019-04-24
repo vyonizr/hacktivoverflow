@@ -15,6 +15,16 @@ class AnswerController {
     })
   }
 
+  static getAnAnswer(req, res) {
+    Answer.findById(req.params.answerId)
+    .then(foundAnswer => {
+      res.status(200).json(foundAnswer)
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+  }
+
   static createAnAnswer(req, res) {
     let answer = null
     Answer.create({
@@ -60,7 +70,6 @@ class AnswerController {
       description: req.body.description,
     }, { new: true })
     .then(updatedAnswer => {
-      console.log(updatedAnswer);
       res.status(200).json(updatedAnswer)
     })
     .catch(err => {

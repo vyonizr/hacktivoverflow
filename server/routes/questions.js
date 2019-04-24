@@ -3,8 +3,9 @@ const QuestionController = require("../controllers/questionController")
 const { isAuthenticated, isAuthorizedQuestion } =require("../middlewares")
 
 router.get("/", QuestionController.getAllQuestions)
-router.use(isAuthenticated)
 router.get("/:questionId", QuestionController.getAQuestion)
+
+router.use(isAuthenticated)
 router.post("/", QuestionController.createAQuestion)
 
 // router.use(isAuthorizedQuestion)

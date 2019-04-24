@@ -12,6 +12,9 @@ class QuestionController {
       path: "answers",
       select: "title description createdBy createdAt"
     })
+    .sort({
+      createdAt: -1
+    })
     .then(questions => {
       res.status(200).json(questions)
     })
@@ -28,7 +31,7 @@ class QuestionController {
     })
     .populate({
       path: "answers",
-      select: "title description createdBy createdAt",
+      select: "title description createdBy createdAt upvotes downvotes",
       populate: {
         path: "createdBy",
         select: "name"
@@ -100,7 +103,6 @@ class QuestionController {
   }
 
   static updateAQuestion(req, res) {
-    console.log(req.params.questionId);
     Question.findByIdAndUpdate(req.params.questionId, {
       title: req.body.title,
       description: req.body.description,
