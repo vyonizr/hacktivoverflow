@@ -12,7 +12,8 @@ schedule()
 
 mongoose.set('useFindAndModify', false);
 
-mongoose.connect("mongodb://localhost:27017/hacktivoverflow", { useNewUrlParser: true })
+// mongoose.connect("mongodb://localhost:27017/hacktivoverflow", { useNewUrlParser: true })
+mongoose.connect(`mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@divenire-1se8t.gcp.mongodb.net/hacktivoverflow`, { useNewUrlParser: true })
 
 app.use(cors())
 app.use(express.json())
